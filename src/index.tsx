@@ -7,7 +7,25 @@ import {
   useChannelQuery,
   useLoginMutation,
   useSendMessageMutation,
+  Message
 } from "./api";
+
+const colorForAuthor = (author: string) => {
+  switch(author.substring(0,1).toLowerCase()) {
+    case 'a':
+      return 'green';
+    case 'b':
+      return 'yellow';
+    case 'r':
+      return 'blue';
+    default:
+      return 'red';
+  }
+}
+
+const ChatMessage = (props: {message: Message}) => {
+  return (<Text color={colorForAuthor(props.message.author)}>{`${props.message.author}: ${props.message.message}`}</Text>);
+}
 
 const Chat = (props: { width: number; height: number }) => {
   const [userInput, charTyped] = useReducer(
@@ -44,14 +62,21 @@ const Chat = (props: { width: number; height: number }) => {
 
   return (
     <Box flexDirection="row" alignItems="flex-end" {...props}>
-      <Text>{JSON.stringify(result.data)}</Text>
+      <Box flexDirection="column-reverse">
       <Text>#: {userInput}</Text>
+      <Box flexDirection="column">
+
+      {result.data?.messages.map((message) => {
+        return <ChatMessage message={message} />
+      })}
+      </Box>
+      </Box>
     </Box>
   );
 };
 
 render(
   <ApiProvider api={api}>
-    <Chat width={80} height={5} />
+    <Chat width={80} height={20} />
   </ApiProvider>
 );

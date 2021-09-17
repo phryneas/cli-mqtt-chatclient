@@ -2,6 +2,11 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { connect, OnMessageCallback } from "mqtt";
 
 import { config } from "dotenv";
+
+export type Message = {
+  author: string;
+  message: string;
+}
 config();
 
 const url = `wss://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.HOST}`;
@@ -44,7 +49,7 @@ export const api = createApi({
         return { topic, username, message };
       },
     }),
-    channel: build.query<{ messages: unknown[] }, string>({
+    channel: build.query<{ messages: Message[] }, string>({
       queryFn() {
         return { data: { messages: [] } };
       },
@@ -61,7 +66,7 @@ export const api = createApi({
             updateCachedData((currentCacheData) => {
               currentCacheData.messages.push(message);
             });
-          } catch {}
+          } catch { }
         };
         client.on("message", cb);
         await cacheEntryRemoved;
