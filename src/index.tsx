@@ -7,25 +7,36 @@ import {
   useChannelQuery,
   useLoginMutation,
   useSendMessageMutation,
-  Message
+  Message,
 } from "./api";
 
 const colorForAuthor = (author: string) => {
-  switch(author.substring(0,1).toLowerCase()) {
-    case 'a':
-      return 'green';
-    case 'b':
-      return 'yellow';
-    case 'r':
-      return 'blue';
+  switch (author.substring(0, 1).toLowerCase()) {
+    case "a":
+      return "green";
+    case "b":
+      return "yellow";
+    case "r":
+      return "blue";
+    case "c":
+      return "green";
+    case "m":
+      return "purple";
     default:
-      return 'red';
+      return "red";
   }
-}
+};
 
-const ChatMessage = (props: {message: Message}) => {
-  return (<Text color={colorForAuthor(props.message.author)}>{`${props.message.author}: ${props.message.message}`}</Text>);
-}
+const ChatMessage = (props: { message: Message }) => {
+  return (
+    <Box>
+      <Text
+        color={colorForAuthor(props.message.author)}
+      >{`${props.message.author}:`}</Text>
+      <Text>{` ${props.message.message}`}</Text>
+    </Box>
+  );
+};
 
 const Chat = (props: { width: number; height: number }) => {
   const [userInput, charTyped] = useReducer(
@@ -50,7 +61,7 @@ const Chat = (props: { width: number; height: number }) => {
       sendMessage({
         message: userInput,
         topic: "general",
-        username: "RTK-User",
+        username: "Rolle",
       });
       charTyped("");
     }
@@ -63,13 +74,12 @@ const Chat = (props: { width: number; height: number }) => {
   return (
     <Box flexDirection="row" alignItems="flex-end" {...props}>
       <Box flexDirection="column-reverse">
-      <Text>#: {userInput}</Text>
-      <Box flexDirection="column">
-
-      {result.data?.messages.map((message) => {
-        return <ChatMessage message={message} />
-      })}
-      </Box>
+        <Text>#: {userInput}</Text>
+        <Box flexDirection="column">
+          {result.data?.messages.map((message) => {
+            return <ChatMessage message={message} />;
+          })}
+        </Box>
       </Box>
     </Box>
   );
